@@ -1,0 +1,29 @@
+services:
+
+  client:
+    container_name: task-client
+    build:
+      context: ./client
+      args:
+        - SERVER_URL=http://server:3001
+    working_dir: /client
+    volumes:
+      - ./client/src:/client/src
+      - ./client/.svelte-kit:/client/.svelte-kit
+    ports:
+      - 3000:3000
+    depends_on:
+      - server
+    command: npm run dev
+
+  server:
+    container_name: task-server
+    build:
+      context: ./server
+    working_dir: /server
+    volumes:
+      - ./server:/server
+    environment:
+      - LOG_LEVEL=debug
+      - HTTP_PORT=3001
+    command: go run main.go
