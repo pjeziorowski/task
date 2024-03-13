@@ -2,7 +2,7 @@ import api from "$lib/server/api";
 import { error } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
 
-type RecommendedAnime = {
+type JikanAPIRecommendedAnime = {
     data: {
         content: string;
         entry: {
@@ -21,7 +21,9 @@ type RecommendedAnime = {
 };
 
 export const load = (async () => {
-    const recommended = await api<RecommendedAnime>("https://api.jikan.moe/v4/recommendations/anime");
+    const recommended = await api<JikanAPIRecommendedAnime>(
+        "https://api.jikan.moe/v4/recommendations/anime",
+    );
     if (!recommended.success) {
         throw error(500, "Failed to fetch recommended anime");
     }

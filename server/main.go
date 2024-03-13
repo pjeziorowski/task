@@ -56,8 +56,14 @@ func main() {
 		}
 		return c.String(http.StatusOK, "Hello, World!")
 	})
-	e.GET("/favorites", func(c echo.Context) error {
+	e.GET("/users/:userId/favorites", func(c echo.Context) error {
 		return services.GetFavorites(c)
+	})
+	e.PUT("/users/:userId/favorites", func(c echo.Context) error {
+		return services.AddFavorite(c)
+	})
+	e.DELETE("/users/:userId/favorites/:animeId", func(c echo.Context) error {
+		return services.RemoveFavorite(c)
 	})
 
 	slog.Info("HTTP server listening on", "port", system.HTTP_PORT)

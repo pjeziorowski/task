@@ -1,9 +1,12 @@
 import api from "$lib/server/api";
-import { error } from "@sveltejs/kit";
+import { addFavorite, removeFavorite } from "$lib/server/favorites";
+import { error, fail } from "@sveltejs/kit";
+import { zod } from "sveltekit-superforms/adapters";
+import { superValidate } from "sveltekit-superforms/server";
+import { z } from "zod";
 import type { Actions, PageServerLoad } from "./$types";
-import favorites from "$lib/data";
 
-export type Anime = {
+export type JikanAPIAnimeDetails = {
     data: {
         mal_id: number;
         title: string;
@@ -21,7 +24,7 @@ export type Anime = {
 
 export const load = (async ({ params }) => {
     const id = params.anime_id;
-    const anime = await api<Anime>(
+    const anime = await api<JikanAPIAnimeDetails>(
         `https://api.jikan.moe/v4/anime/${id}`,
     );
     if (!anime.success) {
@@ -30,21 +33,71 @@ export const load = (async ({ params }) => {
     }
     console.debug("anime", anime.data);
     return {
+        removeFromFavoritesForm: await superValidate(
+            {
+                animeId: anime.data.data.mal_id,
+            },
+            zod(removeFromFavoritesSchema),
+        ),
+        addToFavoritesForm: await superValidate(
+            {
+                animeId: anime.data.data.mal_id,
+                title: anime.data.data.title,
+                image: anime.data.data.images.webp.image_url,
+            },
+            zod(addToFavoritesSchema),
+        ),
         anime: anime.data.data,
+        pageTitle: anime.data.data.title,
     };
 }) satisfies PageServerLoad;
 
+const removeFromFavoritesSchema = z.object({
+    animeId: z.number(),
+});
+
+const addToFavoritesSchema = z.object({
+    animeId: z.number(),
+    title: z.string(),
+    image: z.string(),
+});
+
 export const actions = {
-    addToFavorites: async ({ request }) => {
-        const form = await request.formData();
+    addToFavorites: async ({ request, locals }) => {
+        const form = await superValidate(request, zod(addToFavoritesSchema));
 
-        // validate form
-        const mal_id = form.get("mal_id") as unknown as number;
-        const title = form.get("title") as unknown as string;
-        const image = form.get("image") as unknown as string;
+        if (!form.valid) {
+            return fail(400, { form });
+        }
+        if (!locals.userId) {
+            return fail(401, { message: "Unauthorized", form });
+        }
 
-        favorites.set(mal_id, { title: title, image: image });
+        const added = await addFavorite(locals.userId, form.data);
+        if (!added.success) {
+            return fail(500, { message: "Failed to add favorite", form });
+        }
 
-        return { success: true };
+        return { form };
+    },
+    removeFromFavorites: async ({ request, locals }) => {
+        const form = await superValidate(
+            request,
+            zod(removeFromFavoritesSchema),
+        );
+
+        if (!form.valid) {
+            return fail(400, { form });
+        }
+        if (!locals.userId) {
+            return fail(401, { message: "Unauthorized", form });
+        }
+
+        const removed = await removeFavorite(locals.userId, form.data.animeId);
+        if (!removed.success) {
+            return fail(500, { message: "Failed to remove favorite", form });
+        }
+
+        return { form };
     },
 } satisfies Actions;
