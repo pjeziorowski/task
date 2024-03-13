@@ -25,7 +25,7 @@
     export let data: LayoutData;
 </script>
 
-<div class="container mx-auto flex min-h-screen">
+<div class="max-w-7xl mx-auto flex min-h-screen">
     <div class="flex-1">
         <h2 class="{navbarStyle} rounded-r-none border-l">
             {$page.data["pageTitle"] || data.pageTitle}
