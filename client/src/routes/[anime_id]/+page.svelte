@@ -14,12 +14,14 @@
         enhance: removeFromFavoritesEnhance,
     } = removeForm;
 
-    const buttonClass = "rounded-xl p-4 border border-gray-300 shadow";
-
     $: isFavorite = data.favorites
         .map((favorite) => favorite.animeId)
         .includes(data.anime.mal_id);
 </script>
+
+<div class="mb-8">
+    <a class="button" href="/">Go back to list</a>
+</div>
 
 <div class="flex gap-8">
     <img
@@ -52,9 +54,7 @@
                     name="image"
                     value={$addToFavoritesForm.image}
                 />
-                <button class={buttonClass} type="submit">
-                    Add to favorites
-                </button>
+                <button class="button" type="submit">Add to favorites</button>
             </form>
         {:else}
             <form
@@ -67,7 +67,7 @@
                     name="animeId"
                     value={$removeFromFavoritesForm.animeId}
                 />
-                <button class={buttonClass} type="submit">
+                <button class="button" type="submit">
                     Remove from favorites
                 </button>
             </form>
@@ -75,6 +75,8 @@
     </div>
 </div>
 
-<div class="mt-8">
-    <a class={buttonClass} href="/">Go back to list</a>
-</div>
+<style lang="postcss">
+    .button {
+        @apply block w-fit rounded-xl border border-gray-300 p-4 shadow transition-colors duration-200 ease-in-out hover:bg-zinc-50;
+    }
+</style>
