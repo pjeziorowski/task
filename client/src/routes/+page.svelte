@@ -5,19 +5,25 @@
     export let data: PageData;
 </script>
 
-{#each data.recommended.data as recommendation}
-    <div class="mb-4 grid grid-cols-2 rounded border border-gray-800">
-        <h1 class="col-span-2 border-b border-gray-800 p-2">
-            {recommendation.content}
-        </h1>
-        {#each recommendation.entry as subRecommendation}
-            <div class="mb-2 p-2">
-                <Anime
-                    title={subRecommendation.title}
-                    mal_id={subRecommendation.mal_id}
-                    image={subRecommendation.images.webp.image_url}
-                />
+<div class="flex flex-col gap-8">
+    {#each data.recommended.data as recommendation}
+        <div
+            class="flex flex-col gap-8 rounded-xl border border-gray-300 bg-white p-4 md:flex-row"
+        >
+            <div class="flex gap-4">
+                {#each recommendation.entry as subRecommendation}
+                    <Anime
+                        animeId={subRecommendation.mal_id}
+                        title={subRecommendation.title}
+                        image={subRecommendation.images.webp.image_url}
+                    />
+                {/each}
             </div>
-        {/each}
-    </div>
-{/each}
+            <div class="flex-1">
+                <p class="line-clamp-[10]">
+                    {recommendation.content}
+                </p>
+            </div>
+        </div>
+    {/each}
+</div>

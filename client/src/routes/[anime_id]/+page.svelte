@@ -1,6 +1,5 @@
 <script lang="ts">
     import { superForm } from "sveltekit-superforms/client";
-    import Anime from "../anime.svelte";
     import type { PageData } from "./$types";
 
     export let data: PageData;
@@ -14,40 +13,68 @@
         form: removeFromFavoritesForm,
         enhance: removeFromFavoritesEnhance,
     } = removeForm;
+
+    const buttonClass = "rounded-xl p-4 border border-gray-300 shadow";
+
+    $: isFavorite = data.favorites
+        .map((favorite) => favorite.animeId)
+        .includes(data.anime.mal_id);
 </script>
 
-<Anime
-    animeId={data.anime.mal_id}
-    title={data.anime.title}
-    image={data.anime.images.webp.image_url}
-/>
-
-<p>{data.anime.synopsis}</p>
-
-<form action="?/addToFavorites" method="post" use:addToFavoritesEnhance>
-    <input type="hidden" name="animeId" value={$addToFavoritesForm.animeId} />
-    <input type="hidden" name="title" value={$addToFavoritesForm.title} />
-    <input type="hidden" name="image" value={$addToFavoritesForm.image} />
-    <button class="mt-4 rounded bg-gray-300 p-4" type="submit">
-        Add to favorites
-    </button>
-</form>
-
-<form
-    action="?/removeFromFavorites"
-    method="post"
-    use:removeFromFavoritesEnhance
->
-    <input
-        type="hidden"
-        name="animeId"
-        value={$removeFromFavoritesForm.animeId}
+<div class="flex gap-8">
+    <img
+        src={data.anime.images.webp.image_url}
+        alt={data.anime.title}
+        class="h-96 w-64 rounded-xl"
     />
-    <button class="mt-4 rounded bg-gray-300 p-4" type="submit">
-        Remove from favorites
-    </button>
-</form>
+    <div>
+        <h2>{data.anime.title}</h2>
+        <p class="mb-4 flex-1">{data.anime.synopsis}</p>
 
-<div class="mt-10">
-    <a class="rounded bg-gray-300 p-4" href="/">Go back to list</a>
+        {#if !isFavorite}
+            <form
+                action="?/addToFavorites"
+                method="post"
+                use:addToFavoritesEnhance
+            >
+                <input
+                    type="hidden"
+                    name="animeId"
+                    value={$addToFavoritesForm.animeId}
+                />
+                <input
+                    type="hidden"
+                    name="title"
+                    value={$addToFavoritesForm.title}
+                />
+                <input
+                    type="hidden"
+                    name="image"
+                    value={$addToFavoritesForm.image}
+                />
+                <button class={buttonClass} type="submit">
+                    Add to favorites
+                </button>
+            </form>
+        {:else}
+            <form
+                action="?/removeFromFavorites"
+                method="post"
+                use:removeFromFavoritesEnhance
+            >
+                <input
+                    type="hidden"
+                    name="animeId"
+                    value={$removeFromFavoritesForm.animeId}
+                />
+                <button class={buttonClass} type="submit">
+                    Remove from favorites
+                </button>
+            </form>
+        {/if}
+    </div>
+</div>
+
+<div class="mt-8">
+    <a class={buttonClass} href="/">Go back to list</a>
 </div>

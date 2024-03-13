@@ -5,6 +5,7 @@ import { error } from "@sveltejs/kit";
 import type { LayoutServerLoad } from "./$types";
 
 export const load = (async ({ locals }) => {
+    const defaultPageTitle = "Recommendations";
     if (locals.userId) {
         const favorites = await api<Favorite[]>(
             SERVER_URL + `/users/${locals.userId}/favorites`,
@@ -15,11 +16,13 @@ export const load = (async ({ locals }) => {
         }
 
         return {
+            pageTitle: defaultPageTitle,
             favorites: favorites.data,
         };
     }
 
     return {
+        pageTitle: defaultPageTitle,
         favorites: [],
     };
 }) satisfies LayoutServerLoad;

@@ -11,7 +11,7 @@ export const handle: Handle = async ({ event, resolve }) => {
             maxAge: 60 * 60 * 24 * 365,
         });
     }
-    
+
     event.locals.userId = userId;
 
     return resolve(event);

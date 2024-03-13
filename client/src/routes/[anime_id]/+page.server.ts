@@ -48,6 +48,7 @@ export const load = (async ({ params }) => {
             zod(addToFavoritesSchema),
         ),
         anime: anime.data.data,
+        pageTitle: anime.data.data.title,
     };
 }) satisfies PageServerLoad;
 
