@@ -41,7 +41,7 @@
             Your favorites ({data.favorites.length})
         </h2>
         <div class="flex flex-col gap-8 p-8">
-            {#each data.favorites.reverse() as favorite (favorite.animeId)}
+            {#each data.favorites as favorite (favorite.animeId)}
                 <div
                     transition:fade
                     animate:flip={{
