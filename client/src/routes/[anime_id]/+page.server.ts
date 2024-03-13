@@ -6,7 +6,7 @@ import { superValidate } from "sveltekit-superforms/server";
 import { z } from "zod";
 import type { Actions, PageServerLoad } from "./$types";
 
-export type JikanAPIAnime = {
+export type JikanAPIAnimeDetails = {
     data: {
         mal_id: number;
         title: string;
@@ -24,7 +24,9 @@ export type JikanAPIAnime = {
 
 export const load = (async ({ params }) => {
     const id = params.anime_id;
-    const anime = await api<JikanAPIAnime>(`https://api.jikan.moe/v4/anime/${id}`);
+    const anime = await api<JikanAPIAnimeDetails>(
+        `https://api.jikan.moe/v4/anime/${id}`,
+    );
     if (!anime.success) {
         console.error("Failed to fetch anime", anime.error);
         throw error(500, "Failed to fetch anime");
@@ -69,9 +71,9 @@ export const actions = {
         if (!locals.userId) {
             return fail(401, { message: "Unauthorized", form });
         }
-        
-        const inFavorites = await addFavorite(locals.userId, form.data)
-        if (!inFavorites) {
+
+        const added = await addFavorite(locals.userId, form.data);
+        if (!added.success) {
             return fail(500, { message: "Failed to add favorite", form });
         }
 
@@ -82,7 +84,7 @@ export const actions = {
             request,
             zod(removeFromFavoritesSchema),
         );
-        
+
         if (!form.valid) {
             return fail(400, { form });
         }
@@ -90,8 +92,8 @@ export const actions = {
             return fail(401, { message: "Unauthorized", form });
         }
 
-        const removed = await removeFavorite(locals.userId, form.data.animeId)
-        if (!removed) {
+        const removed = await removeFavorite(locals.userId, form.data.animeId);
+        if (!removed.success) {
             return fail(500, { message: "Failed to remove favorite", form });
         }
 

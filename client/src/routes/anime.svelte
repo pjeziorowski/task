@@ -1,14 +1,14 @@
 <script lang="ts">
+    export let animeId: number;
     export let title: string;
-    export let mal_id: number;
     export let image: string;
 </script>
 
-<h1>{title}</h1>
+<h1 class="text-center font-semibold">{title}</h1>
 
-<a href="/{mal_id}">
+<a href="/{animeId}">
     <img
-        class="hover:opacity-50 hover:cursor-pointer"
+        class="hover:cursor-pointer hover:opacity-50"
         src={image}
         alt={title}
         height="200px"

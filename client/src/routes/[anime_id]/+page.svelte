@@ -17,7 +17,7 @@
 </script>
 
 <Anime
-animeId={data.anime.mal_id}
+    animeId={data.anime.mal_id}
     title={data.anime.title}
     image={data.anime.images.webp.image_url}
 />
