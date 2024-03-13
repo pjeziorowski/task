@@ -27,7 +27,7 @@
 
 <div class="max-w-7xl mx-auto flex min-h-screen">
     <div class="flex-1">
-        <h2 class="{navbarStyle} rounded-r-none border-l">
+        <h2 class="navbar rounded-r-none border-l">
             {$page.data["pageTitle"] || data.pageTitle}
         </h2>
         <div class="p-8">
@@ -37,7 +37,7 @@
     <div
         class="sticky top-0 h-screen w-64 flex-none items-center justify-center overflow-y-auto border-l border-gray-300 bg-white"
     >
-        <h2 class="{navbarStyle} rounded-l-none border-r">
+        <h2 class="navbar rounded-l-none border-r">
             Your favorites ({data.favorites.length})
         </h2>
         <div class="flex flex-col gap-8 p-8">
@@ -60,3 +60,9 @@
         </div>
     </div>
 </div>
+
+<style lang="postcss">
+    .navbar {
+        @apply sticky top-0 z-10 bg-white/50 p-4 font-semibold backdrop-blur border-b border-gray-300 rounded-xl rounded-t-none shadow px-8 py-4;
+    }
+</style>
