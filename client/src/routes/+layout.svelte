@@ -8,9 +8,6 @@
     import type { LayoutData } from "./$types";
     import Anime from "./anime.svelte";
 
-    const navbarStyle =
-        "sticky top-0 z-10 bg-white/50 p-4 font-semibold backdrop-blur border-b border-gray-300 rounded-xl rounded-t-none shadow px-8 py-4";
-
     onNavigate((navigation) => {
         if (!document.startViewTransition) return;
 
