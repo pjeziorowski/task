@@ -5,9 +5,9 @@
     export let data: PageData;
 </script>
 
-<div class="flex flex-col gap-8">
+<article class="flex flex-col gap-8">
     {#each data.recommended.data as recommendation}
-        <div
+        <section
             class="flex flex-col gap-8 rounded-xl border border-gray-300 bg-white p-4 md:flex-row"
         >
             <div class="flex gap-4">
@@ -24,6 +24,6 @@
                     {recommendation.content}
                 </p>
             </div>
-        </div>
+        </section>
     {/each}
-</div>
+</article>
